@@ -1,7 +1,71 @@
+import { useEffect, useState } from "react";
+import io from "socket.io-client";
 import "./App.css";
+import { AddBand } from "./components/AddBand";
+import { BandsList } from "./components/BandsList";
+
+const connectSocketServer = () => {
+  const socket = io.connect("http://localhost:8080", {
+    transports: ["websocket"],
+  });
+  return socket;
+};
 
 function App() {
-  return <div>Hello word</div>;
+  const [socket] = useState(connectSocketServer());
+  const [online, setOnline] = useState(false);
+  const [bands, setBands] = useState([]);
+
+  useEffect(() => {
+    setOnline(socket.connected);
+  }, [socket]);
+
+  useEffect(() => {
+    socket.on("connect", () => {
+      setOnline(true);
+    });
+  }, [socket]);
+
+  useEffect(() => {
+    socket.on("disconnect", () => {
+      setOnline(false);
+    });
+  }, [socket]);
+
+  useEffect(() => {
+    socket.on("current-bands", (bands) => {
+      setBands(bands);
+    });
+  }, [socket]);
+
+  const onVote = (id) => {
+    socket.emit("new-vote", { id });
+  };
+
+  return (
+    <div className="container">
+      <div className="alert">
+        <p>
+          Service status:
+          {online ? (
+            <span className="text-success">Online</span>
+          ) : (
+            <span className="text-danger">Offline</span>
+          )}
+        </p>
+      </div>
+      <h1>BandNames</h1>
+      <hr />
+      <div className="row">
+        <div className="col-8">
+          <BandsList bands={bands} onVote={onVote} />
+        </div>
+        <div className="col-4">
+          <AddBand />
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default App;
