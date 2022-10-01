@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-export const BandsList = ({ bands, onVote, onDelete }) => {
+export const BandsList = ({ bands, onVote, onDelete, onChangeName }) => {
   const [bandsList, setBandsList] = useState(bands);
 
   useEffect(() => {
@@ -18,7 +18,7 @@ export const BandsList = ({ bands, onVote, onDelete }) => {
   };
 
   const lostFocus = (id, name) => {
-    console.log(id, name);
+    onChangeName(id, name);
   };
 
   const createRows = () => {
