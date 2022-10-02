@@ -2,6 +2,7 @@ import { useContext } from "react";
 import "./App.css";
 import { AddBand } from "./components/AddBand";
 import { BandsList } from "./components/BandsList";
+import { ChartBand } from "./components/ChartBand";
 import { SocketContext } from "./context/SocketContext";
 
 function App() {
@@ -21,6 +22,11 @@ function App() {
       </div>
       <h1>BandNames</h1>
       <hr />
+      <div className="row">
+        <div className="col">
+          <ChartBand />
+        </div>
+      </div>
       <div className="row">
         <div className="col-8">
           <BandsList />
